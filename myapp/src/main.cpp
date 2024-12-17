@@ -1,24 +1,17 @@
-﻿// AB_Programming.cpp: define el punto de entrada de la aplicación.
-//
-#include <iostream>
-#include "myapp/util/Utils.h"
-#include "myapp/model/Patient.h"
-#include "myapp/impl/PatientImpl.cpp"
-#include "myapp/impl/DoctorImpl.cpp"
-#include "myapp/impl/AppointmentImpl.cpp"
- // AB_Programming.cpp
-#include <iostream>
-#include "myapp/impl/PatientImpl.cpp"
-#include "myapp/impl/DoctorImpl.cpp"
-#include "myapp/impl/AppointmentImpl.cpp"
+﻿#include <iostream>
+#include "myapp/include/Utils.h"
+#include "myapp/include/Patient.h"
+#include "myapp/include/Doctor.h"
+#include "myapp/include/Appointment.h"
+
 
 void mostrarMenuPrincipal() {
     std::cout << "\n--- Menú Principal ---\n";
-    std::cout << "1. Gestión de Pacientes\n";
-    std::cout << "2. Gestión de Médicos\n";
-    std::cout << "3. Gestión de Citas\n";
+    std::cout << "1. Gestion de Pacientes\n";
+    std::cout << "2. Gestion de Medicos\n";
+    std::cout << "3. Gestion de Citas\n";
     std::cout << "4. Salir\n";
-    std::cout << "Seleccione una opción: ";
+    std::cout << "Seleccione una opcion: ";
 }
 
 void menuPacientes() {
@@ -62,13 +55,13 @@ int main() {
 
                 switch (opcionSubmenu) {
                 case 1:
-                    registrarPaciente(Patient("Juan Perez", 1, "2024-05-01"));
+                    Patient::registrarPaciente(Patient("Joel López", 1, "2024-05-01"));
                     break;
                 case 2:
-                    buscarPaciente(1);
+                    Patient::buscarPaciente(1);
                     break;
                 case 3:
-                    eliminarPaciente(1);
+                    Patient::eliminarPaciente(1);
                     break;
                 }
             } while (opcionSubmenu != 4);
@@ -81,10 +74,10 @@ int main() {
 
                 switch (opcionSubmenu) {
                 case 1:
-                    registrarDoctor(Doctor("Dra. Gomez", 2, "Cardiología"));
+                    Doctor::registrarDoctor(Doctor("Dra. Gomez", 2, "Cardiología"));
                     break;
                 case 2:
-                    eliminarDoctor(2);
+                    Doctor::eliminarDoctor(2);
                     break;
                 }
             } while (opcionSubmenu != 3);
@@ -97,13 +90,13 @@ int main() {
 
                 switch (opcionSubmenu) {
                 case 1:
-                    registrarCita(Appointment(1, "Consulta", "2024-06-01", "10:00", 1, 2));
+                    Appointment::registrarCita(Appointment(1, "Consulta", "2024-06-01", "10:00", 1, 2));
                     break;
                 case 2:
-                    cancelarCita(1);
+                    Appointment::cancelarCita(1);
                     break;
                 case 3:
-                    ordenarCitasPorFecha();
+                    Appointment::ordenarCitasPorFecha();
                     break;
                 }
             } while (opcionSubmenu != 4);

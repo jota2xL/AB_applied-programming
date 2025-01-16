@@ -23,6 +23,7 @@ bool Appointment::validarID(int id) {
     return id > 0;
 }
 
+// Registrar una cita
 void Appointment::registrarCita(const Appointment& cita) {
     // Validaciones
     if (!validarFecha(cita.fecha)) {
@@ -42,6 +43,37 @@ void Appointment::registrarCita(const Appointment& cita) {
     std::cout << "Cita registrada: " << cita.descripcion << "\n";
 }
 
+// Modificar una cita existente
+void Appointment::modificarCita(int id, const std::string& nuevaFecha, const std::string& nuevaHora, int nuevoMedicoId) {
+    for (auto& cita : citas) {
+        if (cita.id == id) {
+            // Validaciones antes de modificar
+            if (!validarFecha(nuevaFecha)) {
+                std::cout << "Error: Fecha inválida. Formato esperado: YYYY-MM-DD.\n";
+                return;
+            }
+            if (!validarHora(nuevaHora)) {
+                std::cout << "Error: Hora inválida. Formato esperado: HH:MM.\n";
+                return;
+            }
+            if (!validarID(nuevoMedicoId)) {
+                std::cout << "Error: ID del médico inválido. Debe ser un número positivo.\n";
+                return;
+            }
+
+            // Aplicar modificaciones
+            cita.fecha = nuevaFecha;
+            cita.hora = nuevaHora;
+            cita.medicoId = nuevoMedicoId;
+
+            std::cout << "Cita modificada: " << cita.descripcion << "\n";
+            return;
+        }
+    }
+    std::cout << "Error: Cita no encontrada con el ID proporcionado.\n";
+}
+
+// Cancelar una cita
 void Appointment::cancelarCita(int id) {
     citas.erase(
         std::remove_if(citas.begin(), citas.end(),
@@ -50,6 +82,7 @@ void Appointment::cancelarCita(int id) {
     std::cout << "Cita cancelada.\n";
 }
 
+// Ordenar citas por fecha
 void Appointment::ordenarCitasPorFecha() {
     std::sort(citas.begin(), citas.end(),
         [](const Appointment& a, const Appointment& b) { return a.fecha < b.fecha; });

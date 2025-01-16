@@ -1,3 +1,0 @@
-C:/Users/Usuario/OneDrive/Imágenes/msmk university/AB_applied programming/build/CMakeFiles/AB_Programming.dir
-C:/Users/Usuario/OneDrive/Imágenes/msmk university/AB_applied programming/build/CMakeFiles/ALL_BUILD.dir
-C:/Users/Usuario/OneDrive/Imágenes/msmk university/AB_applied programming/build/CMakeFiles/ZERO_CHECK.dir

@@ -17,6 +17,10 @@ public:
     static void registrarCita(const Appointment& cita);
     static void cancelarCita(int id);
     static void ordenarCitasPorFecha();
+    // validaciones
+    static bool validarFecha(const std::string& fecha);
+    static bool validarHora(const std::string& hora);
+    static bool validarID(int id);
 };
 
 #endif

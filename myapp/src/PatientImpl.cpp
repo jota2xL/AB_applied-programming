@@ -53,6 +53,28 @@ void Patient::buscarPaciente(int id) {
     std::cout << "Paciente no encontrado.\n";
 }
 
+// buscar un paciente por nombre
+void Patient::buscarPacientePorNombre(const std::string& nombre) {
+    for (const auto& p : pacientes) {
+        if (p.nombre == nombre) {
+            std::cout << "Paciente encontrado: " << p.nombre << " (ID: " << p.id << ")\n";
+            return;
+        }
+    }
+    std::cout << "Paciente no encontrado con ese nombre.\n";
+}
+
+// buscar un paciente por fecha de ingreso
+void Patient::buscarPacientePorFechaIngreso(const std::string& fecha) {
+    for (const auto& p : pacientes) {
+        if (p.fechaIngreso == fecha) {
+            std::cout << "Paciente encontrado: " << p.nombre << " (ID: " << p.id << ")\n";
+            return;
+        }
+    }
+    std::cout << "Paciente no encontrado con esa fecha de ingreso.\n";
+}
+
 // eliminar un paciente por ID
 void Patient::eliminarPaciente(int id) {
     pacientes.erase(

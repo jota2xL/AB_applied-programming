@@ -14,6 +14,8 @@ public:
     static void registrarPaciente(const Patient& paciente);
     static void buscarPaciente(int id);
     static void eliminarPaciente(int id);
+    static void buscarPacientePorNombre(const std::string& nombre);
+    static void buscarPacientePorFechaIngreso(const std::string& fecha);
 
     // validación
     static bool validarNombre(const std::string& nombre);

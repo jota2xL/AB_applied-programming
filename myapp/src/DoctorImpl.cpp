@@ -3,62 +3,72 @@
 #include <vector>
 #include <algorithm>
 #include <iostream>
-#include <cstdio>
+#include <cstdio> 
 
 std::vector<Doctor> medicos;
 
-// Validar nombre
+
 bool Doctor::validarNombre(const std::string& nombre) {
-    return !nombre.empty();
+    return !nombre.empty(); 
 }
 
-// Validar especialidad
+
 bool Doctor::validarEspecialidad(const std::string& especialidad) {
-    return !especialidad.empty();
+    return !especialidad.empty(); 
 }
 
-// Registrar doctor
+
 void Doctor::registrarDoctor(const Doctor& doctor) {
     if (!validarNombre(doctor.nombre) || !validarEspecialidad(doctor.especialidad)) {
-        std::cout << "Datos inválidos para el doctor.\n";
+        std::cout << "Datos inválidos para el médico.\n";
         return;
     }
     medicos.push_back(doctor);
-    std::cout << "Doctor registrado: " << doctor.nombre << "\n";
+    std::cout << "Médico registrado: " << doctor.nombre << "\n";
 }
 
-// Eliminar doctor
+
 void Doctor::eliminarDoctor(int id) {
     auto it = std::remove_if(medicos.begin(), medicos.end(),
         [id](const Doctor& d) { return d.id == id; });
     if (it != medicos.end()) {
         medicos.erase(it, medicos.end());
-        std::cout << "Doctor eliminado.\n";
+        std::cout << "Médico eliminado.\n";
     }
     else {
-        std::cout << "Doctor no encontrado.\n";
+        std::cout << "Médico no encontrado.\n";
     }
 }
 
-// Guardar doctores
+void Doctor::listarDoctores() {
+    if (medicos.empty()) {
+        std::cout << "No hay médicos registrados.\n";
+        return;
+    }
+    for (const auto& d : medicos) {
+        std::cout << "ID: " << d.id << ", Nombre: " << d.nombre << ", Especialidad: " << d.especialidad << "\n";
+    }
+}
+
+
 void Doctor::guardarDoctores(const std::string& archivo) {
     FILE* outFile = fopen(archivo.c_str(), "w");
     if (!outFile) {
-        std::cout << "Error al abrir el archivo.\n";
+        std::cout << "Error al abrir el archivo para guardar médicos.\n";
         return;
     }
     for (const auto& d : medicos) {
         fprintf(outFile, "%d,%s,%s\n", d.id, d.nombre.c_str(), d.especialidad.c_str());
     }
     fclose(outFile);
-    std::cout << "Doctores guardados en " << archivo << "\n";
+    std::cout << "Médicos guardados en " << archivo << "\n";
 }
 
-// Cargar doctores
+
 void Doctor::cargarDoctores(const std::string& archivo) {
     FILE* inFile = fopen(archivo.c_str(), "r");
     if (!inFile) {
-        std::cout << "Error al abrir el archivo.\n";
+        std::cout << "Error al abrir el archivo para cargar médicos.\n";
         return;
     }
     medicos.clear();
@@ -68,5 +78,5 @@ void Doctor::cargarDoctores(const std::string& archivo) {
         medicos.emplace_back(nombre, id, especialidad);
     }
     fclose(inFile);
-    std::cout << "Doctores cargados desde " << archivo << "\n";
+    std::cout << "Médicos cargados desde " << archivo << "\n";
 }

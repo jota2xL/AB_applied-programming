@@ -4,8 +4,8 @@
 #include "myapp/include/Doctor.h"
 #include "myapp/include/Appointment.h"
 
-
-void mostrarMenuPrincipal() {
+// Declaramos las funciones como estáticas
+static void mostrarMenuPrincipal() {
     std::cout << "\n--- Menú Principal ---\n";
     std::cout << "1. Gestion de Pacientes\n";
     std::cout << "2. Gestion de Medicos\n";
@@ -14,7 +14,7 @@ void mostrarMenuPrincipal() {
     std::cout << "Seleccione una opcion: ";
 }
 
-void menuPacientes() {
+static void menuPacientes() {
     std::cout << "\n--- Gestión de Pacientes ---\n";
     std::cout << "1. Registrar Paciente\n";
     std::cout << "2. Buscar Paciente\n";
@@ -23,7 +23,7 @@ void menuPacientes() {
     std::cout << "Seleccione una opción: ";
 }
 
-void menuMedicos() {
+static void menuMedicos() {
     std::cout << "\n--- Gestión de Médicos ---\n";
     std::cout << "1. Registrar Médico\n";
     std::cout << "2. Eliminar Médico\n";
@@ -31,7 +31,7 @@ void menuMedicos() {
     std::cout << "Seleccione una opción: ";
 }
 
-void menuCitas() {
+static void menuCitas() {
     std::cout << "\n--- Gestión de Citas ---\n";
     std::cout << "1. Registrar Cita\n";
     std::cout << "2. Cancelar Cita\n";

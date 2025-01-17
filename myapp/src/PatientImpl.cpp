@@ -1,48 +1,38 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include "myapp/include/Patient.h"
 #include <vector>
 #include <algorithm>
 #include <iostream>
-#include <regex>
+#include <cstdio> // Para fopen, fclose, fprintf, fscanf
 
 std::vector<Patient> pacientes;
 
-// validar el nombre (solo letras y espacios)
+// Validar nombre
 bool Patient::validarNombre(const std::string& nombre) {
-    std::regex nombreRegex("^[A-Za-z ]+$");
-    return std::regex_match(nombre, nombreRegex);
+    return !nombre.empty(); // Ejemplo básico de validación
 }
 
-// validar el ID (debe ser un número entero positivo)
+// Validar ID
 bool Patient::validarID(int id) {
     return id > 0;
 }
 
-// validar la fecha (formato YYYY-MM-DD)
+// Validar fecha (formato YYYY-MM-DD)
 bool Patient::validarFecha(const std::string& fecha) {
-    std::regex fechaRegex("^\\d{4}-\\d{2}-\\d{2}$");
-    return std::regex_match(fecha, fechaRegex);
+    return fecha.size() == 10 && fecha[4] == '-' && fecha[7] == '-';
 }
 
-// registrar un paciente
+// Registrar paciente
 void Patient::registrarPaciente(const Patient& paciente) {
-    if (!validarNombre(paciente.nombre)) {
-        std::cout << "Error: Nombre inválido.\n";
+    if (!validarNombre(paciente.nombre) || !validarID(paciente.id) || !validarFecha(paciente.fechaIngreso)) {
+        std::cout << "Datos inválidos para el paciente.\n";
         return;
     }
-    if (!validarID(paciente.id)) {
-        std::cout << "Error: ID inválido. Debe ser un número positivo.\n";
-        return;
-    }
-    if (!validarFecha(paciente.fechaIngreso)) {
-        std::cout << "Error: Fecha de ingreso inválida. Formato esperado: YYYY-MM-DD.\n";
-        return;
-    }
-
     pacientes.push_back(paciente);
     std::cout << "Paciente registrado: " << paciente.nombre << "\n";
 }
 
-// buscar un paciente por ID
+// Buscar paciente
 void Patient::buscarPaciente(int id) {
     for (const auto& p : pacientes) {
         if (p.id == id) {
@@ -53,33 +43,46 @@ void Patient::buscarPaciente(int id) {
     std::cout << "Paciente no encontrado.\n";
 }
 
-// buscar un paciente por nombre
-void Patient::buscarPacientePorNombre(const std::string& nombre) {
-    for (const auto& p : pacientes) {
-        if (p.nombre == nombre) {
-            std::cout << "Paciente encontrado: " << p.nombre << " (ID: " << p.id << ")\n";
-            return;
-        }
-    }
-    std::cout << "Paciente no encontrado con ese nombre.\n";
-}
-
-// buscar un paciente por fecha de ingreso
-void Patient::buscarPacientePorFechaIngreso(const std::string& fecha) {
-    for (const auto& p : pacientes) {
-        if (p.fechaIngreso == fecha) {
-            std::cout << "Paciente encontrado: " << p.nombre << " (ID: " << p.id << ")\n";
-            return;
-        }
-    }
-    std::cout << "Paciente no encontrado con esa fecha de ingreso.\n";
-}
-
-// eliminar un paciente por ID
+// Eliminar paciente
 void Patient::eliminarPaciente(int id) {
-    pacientes.erase(
-        std::remove_if(pacientes.begin(), pacientes.end(),
-            [id](const Patient& p) { return p.id == id; }),
-        pacientes.end());
-    std::cout << "Paciente eliminado.\n";
+    auto it = std::remove_if(pacientes.begin(), pacientes.end(),
+        [id](const Patient& p) { return p.id == id; });
+    if (it != pacientes.end()) {
+        pacientes.erase(it, pacientes.end());
+        std::cout << "Paciente eliminado.\n";
+    }
+    else {
+        std::cout << "Paciente no encontrado.\n";
+    }
+}
+
+// Guardar pacientes
+void Patient::guardarPacientes(const std::string& archivo) {
+    FILE* outFile = fopen(archivo.c_str(), "w");
+    if (!outFile) {
+        std::cout << "Error al abrir el archivo.\n";
+        return;
+    }
+    for (const auto& p : pacientes) {
+        fprintf(outFile, "%d,%s,%s\n", p.id, p.nombre.c_str(), p.fechaIngreso.c_str());
+    }
+    fclose(outFile);
+    std::cout << "Pacientes guardados en " << archivo << "\n";
+}
+
+// Cargar pacientes
+void Patient::cargarPacientes(const std::string& archivo) {
+    FILE* inFile = fopen(archivo.c_str(), "r");
+    if (!inFile) {
+        std::cout << "Error al abrir el archivo.\n";
+        return;
+    }
+    pacientes.clear();
+    char nombre[101], fechaIngreso[21];
+    int id;
+    while (fscanf(inFile, "%d,%100[^,],%20s", &id, nombre, fechaIngreso) == 3) {
+        pacientes.emplace_back(nombre, id, fechaIngreso);
+    }
+    fclose(inFile);
+    std::cout << "Pacientes cargados desde " << archivo << "\n";
 }

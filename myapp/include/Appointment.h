@@ -2,7 +2,7 @@
 #define APPOINTMENT_H
 
 #include "MedicalEntity.h"
-#include <vector>
+#include <string>
 
 class Appointment : public MedicalEntity {
 public:
@@ -19,10 +19,6 @@ public:
     static void cancelarCita(int id);
     static void ordenarCitasPorFecha();
 
-    // Declaración de la nueva función para modificar citas
-    static void modificarCita(int id, const std::string& nuevaFecha, const std::string& nuevaHora, int nuevoMedicoId);
-
-    // Funciones de validación
     static bool validarFecha(const std::string& fecha);
     static bool validarHora(const std::string& hora);
     static bool validarID(int id);

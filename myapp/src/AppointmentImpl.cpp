@@ -3,51 +3,100 @@
 #include <vector>
 #include <algorithm>
 #include <iostream>
-#include <cstdio> // Para fopen, fclose, fprintf, fscanf
+#include <cstdio> 
 
 std::vector<Appointment> citas;
 
-// Cancelar una cita
-void Appointment::cancelarCita(int id) {
-    auto it = std::remove_if(citas.begin(), citas.end(),
-        [id](const Appointment& cita) { return cita.id == id; });
-    if (it != citas.end()) {
-        citas.erase(it, citas.end());
-        std::cout << "Cita cancelada.\n";
+ //YYYY-MM-DD
+bool Appointment::validarFecha(const std::string& fecha) {
+    if (fecha.size() != 10) return false;
+    if (fecha[4] != '-' || fecha[7] != '-') return false;
+    for (size_t i = 0; i < fecha.size(); ++i) {
+        if ((i != 4 && i != 7) && !isdigit(fecha[i])) return false;
     }
-    else {
-        std::cout << "Cita no encontrada.\n";
-    }
+    return true;
 }
 
-// Ordenar citas por fecha
-void Appointment::ordenarCitasPorFecha() {
-    std::sort(citas.begin(), citas.end(),
-        [](const Appointment& a, const Appointment& b) { return a.fecha < b.fecha; });
-    std::cout << "Citas ordenadas por fecha.\n";
+// hora HH:MM
+bool Appointment::validarHora(const std::string& hora) {
+    if (hora.size() != 5) return false;
+    if (!isdigit(hora[0]) || !isdigit(hora[1]) || hora[2] != ':' || !isdigit(hora[3]) || !isdigit(hora[4])) return false;
+    return true;
 }
 
-// Registrar una cita
+bool Appointment::validarID(int id) {
+    return id > 0;
+}
+
 void Appointment::registrarCita(const Appointment& cita) {
     if (!validarFecha(cita.fecha) || !validarHora(cita.hora) || !validarID(cita.pacienteId) || !validarID(cita.medicoId)) {
         std::cout << "Datos inválidos para la cita.\n";
         return;
     }
     citas.push_back(cita);
-    std::cout << "Cita registrada: " << cita.descripcion << "\n";
+    std::cout << "Cita registrada: " << cita.descripcion << " en " << cita.fecha << " a las " << cita.hora << "\n";
 }
 
-// Validar fecha
-bool Appointment::validarFecha(const std::string& fecha) {
-    return fecha.size() == 10 && fecha[4] == '-' && fecha[7] == '-';
+void Appointment::eliminarCita(int id) {
+    auto it = std::remove_if(citas.begin(), citas.end(),
+        [id](const Appointment& c) { return c.id == id; });
+    if (it != citas.end()) {
+        citas.erase(it, citas.end());
+        std::cout << "Cita eliminada.\n";
+    }
+    else {
+        std::cout << "Cita no encontrada.\n";
+    }
 }
 
-// Validar hora
-bool Appointment::validarHora(const std::string& hora) {
-    return hora.size() == 5 && hora[2] == ':';
+void Appointment::listarCitas() {
+    if (citas.empty()) {
+        std::cout << "No hay citas registradas.\n";
+        return;
+    }
+    std::cout << "\nLista de citas:\n";
+    for (const auto& c : citas) {
+        std::cout << "ID: " << c.id << ", Descripción: " << c.descripcion
+            << ", Fecha: " << c.fecha << ", Hora: " << c.hora
+            << ", Paciente ID: " << c.pacienteId
+            << ", Médico ID: " << c.medicoId << "\n";
+    }
 }
 
-// Validar ID
-bool Appointment::validarID(int id) {
-    return id > 0;
+// Guardar citas
+void Appointment::guardarCitas(const std::string& archivo) {
+    FILE* outFile = fopen(archivo.c_str(), "w");
+    if (!outFile) {
+        std::cout << "Error al abrir el archivo para guardar citas.\n";
+        return;
+    }
+    for (const auto& c : citas) {
+        fprintf(outFile, "%d,%s,%s,%s,%d,%d\n",
+            c.id,
+            c.descripcion.c_str(),
+            c.fecha.c_str(),
+            c.hora.c_str(),
+            c.pacienteId,
+            c.medicoId);
+    }
+    fclose(outFile);
+    std::cout << "Citas guardadas en " << archivo << "\n";
+}
+
+// Cargar citas
+void Appointment::cargarCitas(const std::string& archivo) {
+    FILE* inFile = fopen(archivo.c_str(), "r");
+    if (!inFile) {
+        std::cout << "Error al abrir el archivo para cargar citas.\n";
+        return;
+    }
+    citas.clear();
+    char descripcion[101], fecha[21], hora[11];
+    int id, pacienteId, medicoId;
+    while (fscanf(inFile, "%d,%100[^,],%20[^,],%10[^,],%d,%d",
+        &id, descripcion, fecha, hora, &pacienteId, &medicoId) == 6) {
+        citas.emplace_back(id, descripcion, fecha, hora, pacienteId, medicoId);
+    }
+    fclose(inFile);
+    std::cout << "Citas cargadas desde " << archivo << "\n";
 }

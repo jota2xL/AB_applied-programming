@@ -7,9 +7,9 @@
 
 std::vector<Patient> pacientes;
 
-// Validar nombre
+
 bool Patient::validarNombre(const std::string& nombre) {
-    return !nombre.empty(); // Ejemplo básico de validación
+    return !nombre.empty(); 
 }
 
 // Validar ID
@@ -22,7 +22,6 @@ bool Patient::validarFecha(const std::string& fecha) {
     return fecha.size() == 10 && fecha[4] == '-' && fecha[7] == '-';
 }
 
-// Registrar paciente
 void Patient::registrarPaciente(const Patient& paciente) {
     if (!validarNombre(paciente.nombre) || !validarID(paciente.id) || !validarFecha(paciente.fechaIngreso)) {
         std::cout << "Datos inválidos para el paciente.\n";
@@ -32,7 +31,6 @@ void Patient::registrarPaciente(const Patient& paciente) {
     std::cout << "Paciente registrado: " << paciente.nombre << "\n";
 }
 
-// Buscar paciente
 void Patient::buscarPaciente(int id) {
     for (const auto& p : pacientes) {
         if (p.id == id) {
@@ -43,7 +41,7 @@ void Patient::buscarPaciente(int id) {
     std::cout << "Paciente no encontrado.\n";
 }
 
-// Eliminar paciente
+
 void Patient::eliminarPaciente(int id) {
     auto it = std::remove_if(pacientes.begin(), pacientes.end(),
         [id](const Patient& p) { return p.id == id; });
@@ -56,7 +54,54 @@ void Patient::eliminarPaciente(int id) {
     }
 }
 
-// Guardar pacientes
+
+void Patient::listarPacientes() {
+    if (pacientes.empty()) {
+        std::cout << "No hay pacientes registrados.\n";
+        return;
+    }
+
+    std::cout << "\nLista de pacientes:\n";
+    for (const auto& p : pacientes) {
+        std::cout << "ID: " << p.id << ", Nombre: " << p.nombre
+            << ", Fecha de ingreso: " << p.fechaIngreso << "\n";
+    }
+}
+
+
+void Patient::modificarPaciente(int id) {
+    for (auto& p : pacientes) {
+        if (p.id == id) {
+            std::cout << "Modificando datos del paciente: " << p.nombre << "\n";
+
+            std::cout << "Ingrese el nuevo nombre (o presione Enter para mantener el actual): ";
+            std::string nuevoNombre;
+            std::cin.ignore(); // Limpiar el buffer antes de getline
+            std::getline(std::cin, nuevoNombre);
+            if (!nuevoNombre.empty()) {
+                p.nombre = nuevoNombre;
+            }
+
+            std::cout << "Ingrese la nueva fecha de ingreso (YYYY-MM-DD, o Enter para mantener el actual): ";
+            std::string nuevaFecha;
+            std::getline(std::cin, nuevaFecha);
+            if (!nuevaFecha.empty()) {
+                if (validarFecha(nuevaFecha)) {
+                    p.fechaIngreso = nuevaFecha;
+                }
+                else {
+                    std::cout << "Fecha inválida. Se mantuvo la anterior.\n";
+                }
+            }
+
+            std::cout << "Datos del paciente actualizados.\n";
+            return;
+        }
+    }
+    std::cout << "Paciente con ID " << id << " no encontrado.\n";
+}
+
+
 void Patient::guardarPacientes(const std::string& archivo) {
     FILE* outFile = fopen(archivo.c_str(), "w");
     if (!outFile) {

@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <iostream>
 #include <cstdio> // Para fopen, fclose, fprintf, fscanf
+#include <filesystem> //  ruta 
 
 std::vector<Patient> pacientes;
 
@@ -17,10 +18,19 @@ bool Patient::validarID(int id) {
     return id > 0;
 }
 
-// Validar fecha (formato YYYY-MM-DD)
+// YYYY-MM-DD
 bool Patient::validarFecha(const std::string& fecha) {
-    return fecha.size() == 10 && fecha[4] == '-' && fecha[7] == '-';
+    if (fecha.size() != 10) return false; // 10 caracteres
+    if (fecha[4] != '-' || fecha[7] != '-') return false; // Verificar separadores
+
+   
+    for (size_t i = 0; i < fecha.size(); ++i) {
+        if (i != 4 && i != 7 && !isdigit(fecha[i])) return false;
+    }
+
+    return true;
 }
+
 
 void Patient::registrarPaciente(const Patient& paciente) {
     if (!validarNombre(paciente.nombre) || !validarID(paciente.id) || !validarFecha(paciente.fechaIngreso)) {
@@ -30,6 +40,7 @@ void Patient::registrarPaciente(const Patient& paciente) {
     pacientes.push_back(paciente);
     std::cout << "Paciente registrado: " << paciente.nombre << "\n";
 }
+
 
 void Patient::buscarPaciente(int id) {
     for (const auto& p : pacientes) {
@@ -76,7 +87,7 @@ void Patient::modificarPaciente(int id) {
 
             std::cout << "Ingrese el nuevo nombre (o presione Enter para mantener el actual): ";
             std::string nuevoNombre;
-            std::cin.ignore(); // Limpiar el buffer antes de getline
+            std::cin.ignore(); 
             std::getline(std::cin, nuevoNombre);
             if (!nuevoNombre.empty()) {
                 p.nombre = nuevoNombre;
@@ -112,7 +123,9 @@ void Patient::guardarPacientes(const std::string& archivo) {
         fprintf(outFile, "%d,%s,%s\n", p.id, p.nombre.c_str(), p.fechaIngreso.c_str());
     }
     fclose(outFile);
-    std::cout << "Pacientes guardados en " << archivo << "\n";
+
+    // Imprimir la ruta completa del archivo guardado
+    std::cout << "Pacientes guardados en: " << std::filesystem::absolute(archivo) << "\n";
 }
 
 // Cargar pacientes

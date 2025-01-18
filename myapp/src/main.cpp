@@ -11,7 +11,7 @@ int main() {
 
     int opcionPrincipal = 0, opcionSubmenu = 0;
 
-    while (opcionPrincipal != 4) {
+    do {
         std::cout << "\n--- Menu Principal ---\n";
         std::cout << "1. Gestion de Pacientes\n";
         std::cout << "2. Gestion de Medicos\n";
@@ -20,8 +20,9 @@ int main() {
         std::cout << "Seleccione una opcion: ";
         std::cin >> opcionPrincipal;
 
-        if (opcionPrincipal == 1) {
-            while (opcionSubmenu != 6) {
+        switch (opcionPrincipal) {
+        case 1: // Gestión de Pacientes
+            do {
                 std::cout << "\n--- Gestion de Pacientes ---\n";
                 std::cout << "1. Registrar Paciente\n";
                 std::cout << "2. Buscar Paciente\n";
@@ -32,7 +33,8 @@ int main() {
                 std::cout << "Seleccione una opcion: ";
                 std::cin >> opcionSubmenu;
 
-                if (opcionSubmenu == 1) {
+                switch (opcionSubmenu) {
+                case 1: {
                     std::string nombre, fechaIngreso;
                     int id;
                     std::cout << "Ingrese el nombre del paciente: ";
@@ -43,33 +45,38 @@ int main() {
                     std::cout << "Ingrese la fecha de ingreso (YYYY-MM-DD): ";
                     std::cin >> fechaIngreso;
                     Patient::registrarPaciente(Patient(nombre, id, fechaIngreso));
+                    break;
                 }
-                else if (opcionSubmenu == 2) {
+                case 2: {
                     int id;
                     std::cout << "Ingrese el ID del paciente a buscar: ";
                     std::cin >> id;
                     Patient::buscarPaciente(id);
+                    break;
                 }
-                else if (opcionSubmenu == 3) {
+                case 3: {
                     int id;
                     std::cout << "Ingrese el ID del paciente a eliminar: ";
                     std::cin >> id;
                     Patient::eliminarPaciente(id);
+                    break;
                 }
-                else if (opcionSubmenu == 4) {
+                case 4:
                     Patient::listarPacientes();
-                }
-                else if (opcionSubmenu == 5) {
+                    break;
+                case 5: {
                     int id;
                     std::cout << "Ingrese el ID del paciente a modificar: ";
                     std::cin >> id;
                     Patient::modificarPaciente(id);
+                    break;
                 }
-            }
-            opcionSubmenu = 0; // Resetear para volver al menú principal
-        }
-        else if (opcionPrincipal == 2) {
-            while (opcionSubmenu != 4) {
+                }
+            } while (opcionSubmenu != 6);
+            break;
+
+        case 2: // Gestión de Médicos
+            do {
                 std::cout << "\n--- Gestion de Medicos ---\n";
                 std::cout << "1. Registrar Medico\n";
                 std::cout << "2. Eliminar Medico\n";
@@ -78,7 +85,8 @@ int main() {
                 std::cout << "Seleccione una opcion: ";
                 std::cin >> opcionSubmenu;
 
-                if (opcionSubmenu == 1) {
+                switch (opcionSubmenu) {
+                case 1: {
                     std::string nombre, especialidad;
                     int id;
                     std::cout << "Ingrese el nombre del medico: ";
@@ -90,21 +98,24 @@ int main() {
                     std::cin.ignore();
                     std::getline(std::cin, especialidad);
                     Doctor::registrarDoctor(Doctor(nombre, id, especialidad));
+                    break;
                 }
-                else if (opcionSubmenu == 2) {
+                case 2: {
                     int id;
                     std::cout << "Ingrese el ID del medico a eliminar: ";
                     std::cin >> id;
                     Doctor::eliminarDoctor(id);
+                    break;
                 }
-                else if (opcionSubmenu == 3) {
+                case 3:
                     Doctor::listarDoctores();
+                    break;
                 }
-            }
-            opcionSubmenu = 0; // Resetear para volver al menú principal
-        }
-        else if (opcionPrincipal == 3) {
-            while (opcionSubmenu != 4) {
+            } while (opcionSubmenu != 4);
+            break;
+
+        case 3: // Gestión de Citas
+            do {
                 std::cout << "\n--- Gestion de Citas ---\n";
                 std::cout << "1. Registrar Cita\n";
                 std::cout << "2. Eliminar Cita\n";
@@ -113,7 +124,8 @@ int main() {
                 std::cout << "Seleccione una opcion: ";
                 std::cin >> opcionSubmenu;
 
-                if (opcionSubmenu == 1) {
+                switch (opcionSubmenu) {
+                case 1: {
                     int id, pacienteId, medicoId;
                     std::string descripcion, fecha, hora;
                     std::cout << "Ingrese ID de la cita: ";
@@ -130,26 +142,30 @@ int main() {
                     std::cout << "Ingrese ID del medico: ";
                     std::cin >> medicoId;
                     Appointment::registrarCita(Appointment(id, descripcion, fecha, hora, pacienteId, medicoId));
+                    break;
                 }
-                else if (opcionSubmenu == 2) {
+                case 2: {
                     int id;
                     std::cout << "Ingrese ID de la cita a eliminar: ";
                     std::cin >> id;
                     Appointment::eliminarCita(id);
+                    break;
                 }
-                else if (opcionSubmenu == 3) {
+                case 3:
                     Appointment::listarCitas();
+                    break;
                 }
-            }
-            opcionSubmenu = 0; // Resetear para volver al menú principal
-        }
-        else if (opcionPrincipal == 4) {
+            } while (opcionSubmenu != 4);
+            break;
+
+        case 4:
             std::cout << "Saliendo del sistema...\n";
-        }
-        else {
+            break;
+
+        default:
             std::cout << "Opcion no valida. Intente nuevamente.\n";
         }
-    }
+    } while (opcionPrincipal != 4);
 
     // Guardar datos antes de salir
     Patient::guardarPacientes("pacientes.txt");
